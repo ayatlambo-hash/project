@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechShop — Техника для учёбы и работы</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --primary: #6C63FF;
+      --primary-dark: #4f46e5;
+      --accent: #f59e0b;
+      --text: #0f0f1a;
+      --text-muted: #6b7280;
+      --bg: #f9f9fc;
+      --card: #ffffff;
+      --border: #e8e8f0;
+      --radius: 16px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 48px;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 22px;
+      background: linear-gradient(135deg, var(--primary), #a855f7);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 14px; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-cart {
+      background: var(--primary); color: white;
+      border: none; border-radius: 12px; padding: 8px 18px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; gap: 8px;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+    }
+    .nav-cart:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    #cart-count {
+      background: white; color: var(--primary);
+      width: 20px; height: 20px; border-radius: 50%;
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      background: linear-gradient(135deg, #1a0533 0%, #0f1535 50%, #1a0533 100%);
+      padding: 100px 48px 80px;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(108,99,255,0.35) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(168,85,247,0.25) 0%, transparent 50%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; opacity: 0.08;
+      background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .hero-content { position: relative; max-width: 600px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 100px; padding: 6px 16px; margin-bottom: 24px;
+      font-size: 12px; color: rgba(255,255,255,0.8); font-weight: 500;
+    }
+    .hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 56px; font-weight: 800; line-height: 1.05;
+      color: white; margin-bottom: 20px; letter-spacing: -2px;
+    }
+    .hero h1 span { color: #a78bfa; }
+    .hero p { font-size: 17px; color: rgba(255,255,255,0.65); line-height: 1.7; margin-bottom: 36px; max-width: 480px; }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #a855f7);
+      color: white; border: none; border-radius: 14px;
+      padding: 14px 28px; font-size: 15px; font-weight: 600;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+      transition: all 0.3s; box-shadow: 0 8px 24px rgba(108,99,255,0.4);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(108,99,255,0.5); }
+    .btn-ghost {
+      background: rgba(255,255,255,0.08); color: white;
+      border: 1px solid rgba(255,255,255,0.15); border-radius: 14px;
+      padding: 14px 28px; font-size: 15px; font-weight: 500;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      text-decoration: none; display: inline-flex; align-items: center;
+      transition: all 0.3s;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.15); }
+
+    .hero-stats {
+      position: relative;
+      display: flex; gap: 40px; margin-top: 56px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .stat-item {}
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 32px; font-weight: 800; color: white; line-height: 1;
+    }
+    .stat-label { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+
+    /* PROMO BANNER */
+    .promo-banner {
+      background: linear-gradient(90deg, var(--accent), #ef4444);
+      padding: 14px 48px;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      color: white; font-weight: 600; font-size: 14px;
+    }
+    .promo-banner span { opacity: 0.85; font-weight: 400; }
+
+    /* SECTION */
+    .section { padding: 72px 48px; max-width: 1200px; margin: 0 auto; }
+    .section-header { margin-bottom: 40px; }
+    .section-tag {
+      display: inline-block;
+      background: rgba(108,99,255,0.1); color: var(--primary);
+      font-size: 12px; font-weight: 600; letter-spacing: 1px;
+      text-transform: uppercase; padding: 4px 12px; border-radius: 100px;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 36px; font-weight: 800; letter-spacing: -1px; margin-bottom: 8px;
+    }
+    .section-sub { color: var(--text-muted); font-size: 15px; }
+
+    /* PRODUCTS */
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .product-card {
+      background: var(--card); border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden; transition: all 0.3s;
+      position: relative;
+    }
+    .product-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.10); }
+    .product-img {
+      height: 180px; display: flex; align-items: center;
+      justify-content: center; font-size: 64px;
+      position: relative; overflow: hidden;
+    }
+    .product-badge-wrap {
+      position: absolute; top: 12px; left: 12px; display: flex; gap: 6px;
+    }
+    .badge {
+      font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px;
+      letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .badge-hot { background: #fee2e2; color: #ef4444; }
+    .badge-sale { background: #dcfce7; color: #16a34a; }
+    .badge-new { background: #dbeafe; color: #2563eb; }
+    .product-body { padding: 18px; }
+    .product-name { font-weight: 600; font-size: 15px; margin-bottom: 5px; letter-spacing: -0.2px; }
+    .product-desc { color: var(--text-muted); font-size: 13px; margin-bottom: 14px; line-height: 1.5; }
+    .product-footer { display: flex; align-items: center; justify-content: space-between; }
+    .product-price { font-weight: 800; font-size: 20px; font-family: 'Syne', sans-serif; color: var(--primary); }
+    .product-old-price { font-size: 13px; color: #ccc; text-decoration: line-through; margin-left: 6px; }
+    .add-btn {
+      background: var(--primary); color: white; border: none;
+      border-radius: 10px; padding: 9px 16px; font-size: 13px; font-weight: 600;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: all 0.2s; white-space: nowrap;
+    }
+    .add-btn:hover { background: var(--primary-dark); transform: scale(1.02); }
+    .add-btn.added { background: #10b981; }
+
+    /* FEATURES */
+    .features-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;
+    }
+    .feature-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px 20px;
+      text-align: center; transition: all 0.2s;
+    }
+    .feature-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+    .feature-icon { font-size: 32px; margin-bottom: 12px; }
+    .feature-title { font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+    .feature-desc { color: var(--text-muted); font-size: 13px; line-height: 1.5; }
+
+    /* FAQ */
+    .faq { display: flex; flex-direction: column; gap: 10px; }
+    .faq-item {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden; transition: all 0.2s;
+      cursor: pointer;
+    }
+    .faq-item:hover { border-color: var(--primary); }
+    .faq-item.open { border-color: var(--primary); }
+    .faq-q {
+      padding: 18px 20px; font-weight: 600; font-size: 15px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .faq-q::after { content: "+"; color: var(--primary); font-size: 20px; font-weight: 300; transition: transform 0.2s; }
+    .faq-item.open .faq-q::after { transform: rotate(45deg); }
+    .faq-a {
+      padding: 0 20px; max-height: 0; overflow: hidden;
+      color: var(--text-muted); font-size: 14px; line-height: 1.7;
+      transition: all 0.3s;
+    }
+    .faq-item.open .faq-a { padding: 0 20px 18px; max-height: 200px; }
+
+    /* CONTACTS */
+    .contacts {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;
+    }
+    .contact-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px; text-align: center;
+      transition: all 0.2s;
+    }
+    .contact-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+    .contact-icon { font-size: 32px; margin-bottom: 10px; }
+    .contact-title { font-weight: 600; font-size: 13px; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .contact-val { color: var(--primary); font-size: 14px; font-weight: 600; }
+
+    /* INSTALLMENT */
+    .installment-banner {
+      background: linear-gradient(135deg, #1a0533, #0f1535);
+      border-radius: 20px; padding: 40px;
+      display: flex; align-items: center; gap: 40px;
+      color: white; margin: 0 48px;
+    }
+    .installment-text { flex: 1; }
+    .installment-text h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px; font-weight: 800; margin-bottom: 10px; letter-spacing: -0.5px;
+    }
+    .installment-text p { color: rgba(255,255,255,0.65); line-height: 1.6; }
+    .installment-banks { display: flex; gap: 12px; flex-wrap: wrap; }
+    .bank-badge {
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px; padding: 10px 18px;
+      font-weight: 600; font-size: 14px;
+    }
+
+    footer {
+      background: #0f0f1a; color: rgba(255,255,255,0.4);
+      text-align: center; padding: 28px; font-size: 13px; margin-top: 60px;
+    }
+    footer strong { color: rgba(255,255,255,0.7); }
+
+    /* Cart notification */
+    #cart-toast {
+      position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: #10b981; color: white;
+      padding: 12px 24px; border-radius: 12px;
+      font-weight: 600; font-size: 14px;
+      opacity: 0; transition: all 0.3s; z-index: 9999;
+      pointer-events: none;
+    }
+    #cart-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">TechShop</div>
+  <ul class="nav-links">
+    <li><a href="#products">Каталог</a></li>
+    <li><a href="#installment">Рассрочка</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#contacts">Контакты</a></li>
+  </ul>
+  <button class="nav-cart" onclick="showCart()">
+    🛒 Корзина <div id="cart-count">0</div>
+  </button>
+</nav>
+
+<div class="promo-banner">
+  🔥 Рассрочка 0% на 12 месяцев <span>· Успей до конца месяца</span>
+</div>
+
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      Доставка по Алматы за 1-2 дня
+    </div>
+    <h1>Лучшая <span>техника</span> для учёбы</h1>
+    <p>Ноутбуки, планшеты и аксессуары от официальных дистрибьюторов. Гарантия производителя, рассрочка без переплат.</p>
+    <div class="hero-actions">
+      <a href="#products" class="btn-primary">Смотреть каталог →</a>
+      <a href="#faq" class="btn-ghost">Частые вопросы</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">2 400+</div>
+        <div class="stat-label">довольных клиентов</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">0%</div>
+        <div class="stat-label">переплата по рассрочке</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">1-2 дня</div>
+        <div class="stat-label">доставка по Алматы</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="products">
+  <div class="section-header">
+    <div class="section-tag">Каталог</div>
+    <div class="section-title">Популярные товары</div>
+    <div class="section-sub">Топ продаж этой недели</div>
+  </div>
+  <div class="products">
+
+    <div class="product-card">
+      <div class="product-img" style="background: linear-gradient(135deg, #f0f0f9, #e8e8f8);">
+        💻
+        <div class="product-badge-wrap">
+          <span class="badge badge-hot">Хит</span>
+        </div>
+      </div>
+      <div class="product-body">
+        <div class="product-name">MacBook Air M2</div>
+        <div class="product-desc">13", 8GB RAM, 256GB SSD. Идеально для студентов — лёгкий, мощный, батарея 18 часов.</div>
+        <div class="product-footer">
+          <div>
+            <span class="product-price">489 000 ₸</span>
+          </div>
+          <button class="add-btn" onclick="addToCart(this, 'MacBook Air M2')">В корзину</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-img" style="background: linear-gradient(135deg, #fff0e8, #ffe8d8);">
+        📱
+        <div class="product-badge-wrap">
+          <span class="badge badge-new">Новинка</span>
+        </div>
+      </div>
+      <div class="product-body">
+        <div class="product-name">iPad 10th Gen</div>
+        <div class="product-desc">10.9", 64GB, Wi-Fi. Поддержка Apple Pencil. Идеален для заметок и чтения.</div>
+        <div class="product-footer">
+          <div>
+            <span class="product-price">189 000 ₸</span>
+          </div>
+          <button class="add-btn" onclick="addToCart(this, 'iPad 10th Gen')">В корзину</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-img" style="background: linear-gradient(135deg, #e8f5e9, #d8f0da);">
+        🎧
+        <div class="product-badge-wrap">
+          <span class="badge badge-sale">-15%</span>
+        </div>
+      </div>
+      <div class="product-body">
+        <div class="product-name">Sony WH-1000XM5</div>
+        <div class="product-desc">Лучшее шумоподавление 2024. 30 часов работы. Гарантия 2 года.</div>
+        <div class="product-footer">
+          <div>
+            <span class="product-price">129 000 ₸</span>
+            <span class="product-old-price">152 000 ₸</span>
+          </div>
+          <button class="add-btn" onclick="addToCart(this, 'Sony WH-1000XM5')">В корзину</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-img" style="background: linear-gradient(135deg, #fce8f0, #f8d8e8);">
+        ⌨️
+      </div>
+      <div class="product-body">
+        <div class="product-name">Logitech MX Keys</div>
+        <div class="product-desc">Беспроводная клавиатура с подсветкой. Bluetooth, до 3 устройств.</div>
+        <div class="product-footer">
+          <div>
+            <span class="product-price">59 000 ₸</span>
+          </div>
+          <button class="add-btn" onclick="addToCart(this, 'Logitech MX Keys')">В корзину</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="installment-banner" id="installment">
+  <div class="installment-text">
+    <h3>Рассрочка 0% на 6 и 12 месяцев</h3>
+    <p>Оформление прямо на сайте за 5 минут. Без справок и поручителей. Доступна на любой товар.</p>
+  </div>
+  <div class="installment-banks">
+    <div class="bank-badge">🏦 Halyk Bank</div>
+    <div class="bank-badge">💚 Kaspi</div>
+    <div class="bank-badge">🔵 ForteBank</div>
+  </div>
+</div>
+
+<div style="background: white; margin-top: 60px;">
+<div class="section">
+  <div class="section-header">
+    <div class="section-tag">Почему мы</div>
+    <div class="section-title">Наши преимущества</div>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">✅</div>
+      <div class="feature-title">Официальная гарантия</div>
+      <div class="feature-desc">Apple 1 год, Sony и Logitech 2 года</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🚀</div>
+      <div class="feature-title">Быстрая доставка</div>
+      <div class="feature-desc">По Алматы 1-2 дня, Казахстан 3-5 дней</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">↩️</div>
+      <div class="feature-title">Возврат 14 дней</div>
+      <div class="feature-desc">В оригинальной упаковке без следов использования</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💳</div>
+      <div class="feature-title">Рассрочка 0%</div>
+      <div class="feature-desc">Halyk, Kaspi, ForteBank на 6 и 12 мес</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="section" id="faq">
+  <div class="section-header">
+    <div class="section-tag">FAQ</div>
+    <div class="section-title">Частые вопросы</div>
+    <div class="section-sub">Всё что нужно знать перед покупкой</div>
+  </div>
+  <div class="faq">
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Как долго идёт доставка?</div>
+      <div class="faq-a">Доставка по Алматы — 1-2 рабочих дня. По Казахстану — 3-5 дней. Экспресс-доставка в день заказа доступна при заказе до 14:00.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Можно ли вернуть товар?</div>
+      <div class="faq-a">Да, в течение 14 дней с момента получения. Товар должен быть в оригинальной упаковке и без следов использования.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Есть ли рассрочка?</div>
+      <div class="faq-a">Да! Рассрочка 0% на 6 и 12 месяцев через Halyk Bank и Kaspi. Оформление прямо на сайте при оформлении заказа. Без справок и поручителей.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Какая гарантия на товары?</div>
+      <div class="faq-a">Все товары с официальной гарантией производителя: Apple — 1 год, Sony — 2 года, Logitech — 2 года.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Как оформить заказ?</div>
+      <div class="faq-a">Выберите товар, нажмите "В корзину", заполните форму доставки и выберите способ оплаты. Подтверждение придёт на email в течение 15 минут.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="contacts">
+  <div class="section-header">
+    <div class="section-tag">Контакты</div>
+    <div class="section-title">Мы всегда на связи</div>
+  </div>
+  <div class="contacts">
+    <div class="contact-card">
+      <div class="contact-icon">📞</div>
+      <div class="contact-title">Телефон</div>
+      <div class="contact-val">+7 727 300-10-20</div>
+    </div>
+    <div class="contact-card">
+      <div class="contact-icon">✉️</div>
+      <div class="contact-title">Email</div>
+      <div class="contact-val">hello@techshop.kz</div>
+    </div>
+    <div class="contact-card">
+      <div class="contact-icon">📍</div>
+      <div class="contact-title">Адрес</div>
+      <div class="contact-val">Алматы, пр. Аль-Фараби 17</div>
+    </div>
+    <div class="contact-card">
+      <div class="contact-icon">🕐</div>
+      <div class="contact-title">Режим работы</div>
+      <div class="contact-val">Пн–Сб 10:00–20:00</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2024 <strong>TechShop</strong> — Демо-сайт для AI Copilot v3
+</footer>
+
+<div id="cart-toast">✅ Добавлено в корзину!</div>
+
+<script>
+  let cartCount = 0;
+  function addToCart(btn, name) {
+    cartCount++;
+    document.getElementById('cart-count').textContent = cartCount;
+    btn.textContent = '✓ Добавлено';
+    btn.classList.add('added');
+    setTimeout(() => { btn.textContent = 'В корзину'; btn.classList.remove('added'); }, 2000);
+    const toast = document.getElementById('cart-toast');
+    toast.textContent = `✅ ${name} добавлен в корзину`;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+  function showCart() {
+    alert(`В корзине: ${cartCount} товар(ов). Оформление заказа — в разработке 😊`);
+  }
+  function toggleFaq(el) {
+    el.classList.toggle('open');
+  }
+</script>
+
+<!-- 🤖 AI Copilot v3 Widget -->
+<script src="../widget/copilot.js" data-backend="http://localhost:8000"></script>
+
+</body>
+</html>
